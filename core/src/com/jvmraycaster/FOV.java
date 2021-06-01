@@ -2,9 +2,15 @@ package com.jvmraycaster;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Interpolation;
 import java.util.ArrayList;
 public class FOV extends Entity{
 	private static final long serialVersionUID = -1449654005087061697L;
+	private static final Interpolation screen = new Interpolation() {
+		public float apply (float a) {
+			return (float)(Math.atan2(1-a, a)/(Math.PI/2));
+		}
+	};
 	public final float angle;
 	public final int width;
 	public float activeColumn;
@@ -47,7 +53,7 @@ public class FOV extends Entity{
 	private ArrayList<Float> getInitRayAngles(){
 		ArrayList<Float> rayAngles = new ArrayList<Float>();
 		for (int i = 0; i <= this.width; i++) {
-			rayAngles.add(calculateRayAngle(i));
+			rayAngles.add(this.angle*screen.apply((float)i/this.width));
 		}
 		return rayAngles;
 	}
@@ -59,15 +65,20 @@ public class FOV extends Entity{
 		//System.out.println(getNewRayAngle(x));
 		//System.out.println(getDistanceScale(1000));
 	}
+	/*
 	private float calculateRayAngle(int column) {
-		return this.angle*getColumnScale(column);
+		return this.angle*screen.apply((float)column/this.width);
 	}
+	*/
+	/*
 	private float getColumnScale(float column) {
-		float x = column/this.width;
-		return toAngle(x,(x*-1)+1)/90;
+		return screen.apply(column/this.width);
+		//float x = column/this.width;
+		//return toAngle(x,(x*-1)+1)/90;
 	}
+	*/
 	private float getRayTranspose() {
-		return (float)((this.rotation-this.angle)+(this.angle/2))%360;
+		return (float)(this.rotation-(this.angle/2))%360;
 	}
 	
 	public float getDistanceScale() {
