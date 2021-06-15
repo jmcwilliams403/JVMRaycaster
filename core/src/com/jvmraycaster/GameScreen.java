@@ -64,6 +64,7 @@ public class GameScreen implements Screen{
 	@Override
 	public void show() {
 		Gdx.input.setCursorCatched(true);
+		Gdx.input.setCursorPosition(0, 0);
 	}
 	@Override
 	public void render(float delta) {
@@ -89,7 +90,8 @@ public class GameScreen implements Screen{
 			shapeDrawer.filledRectangle(WIDTH/-2, HEIGHT/-2, WIDTH, HEIGHT, Color.valueOf("00000088"));
 			shapeDrawer.filledCircle(player.x,player.y, player.radius);
 			shapeDrawer.sector(player.x, player.y, (float)DEPTH, (float)Math.toRadians(player.rotation-(player.fov.angle/2)), (float)Math.toRadians(player.fov.angle), Color.valueOf("ffffff44"), Color.valueOf("ffffff44"));
-			//shapeDrawer.polygon(player.fov.getCrop());
+			shapeDrawer.polygon(player.fov.getCrop());
+			HashSet<Sector<?>> sectors = getLiveSectors();
 			for (Sector<?> sector: sectors) {
 				
 				shapeDrawer.polygon(sector.getTransformedVertices());
