@@ -1,14 +1,13 @@
 package com.jvmraycaster.desktop;
 
-import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
-import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.jvmraycaster.JVMRaycaster;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 1280;
-		config.height = 720;
-		new LwjglApplication(new JVMRaycaster(), config);
+		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
+		config.setMaximized(true);
+		new Lwjgl3Application(new JVMRaycaster(), config);
 	}
 }

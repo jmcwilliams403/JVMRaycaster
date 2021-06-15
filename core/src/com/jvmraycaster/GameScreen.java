@@ -19,7 +19,8 @@ import com.badlogic.gdx.Input.Keys;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Comparator;
-
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.InputAdapter;
 public class GameScreen implements Screen{
 	final JVMRaycaster game;
 	Player player;
@@ -65,6 +66,16 @@ public class GameScreen implements Screen{
 	public void show() {
 		Gdx.input.setCursorCatched(true);
 		Gdx.input.setCursorPosition(0, 0);
+		
+		Gdx.input.setInputProcessor(new InputAdapter() {
+			@Override
+			public boolean mouseMoved (int screenX, int screenY) {
+				player.rotate(screenX*Gdx.graphics.getDeltaTime()*8);
+				Gdx.input.setCursorPosition(0, 0);
+				return true;
+			}
+		});
+		
 	}
 	@Override
 	public void render(float delta) {
@@ -99,18 +110,15 @@ public class GameScreen implements Screen{
 		}
 	}
 
-	public void checkControls() {		
-		if(Gdx.input.getX() != 0) {
-			player.rotate(Gdx.input.getX()*Gdx.graphics.getDeltaTime()*8);
-			Gdx.input.setCursorPosition(0, 0);
-		}
+	public void checkControls() {	
 		final float speed = ((Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)^player.autoSprint)? player.speed*player.sprintRate: player.speed);
+		
 		if(Gdx.input.isKeyJustPressed(Keys.CAPS_LOCK)) player.toggleAutoSprint();
 		
 		if(Gdx.input.isKeyPressed(Keys.A)) player.strafe(speed*Gdx.graphics.getDeltaTime());
-		if(Gdx.input.isKeyPressed(Keys.E)) player.strafe(-1f*speed*Gdx.graphics.getDeltaTime());
-		if(Gdx.input.isKeyPressed(Keys.COMMA)) player.moveForward(speed*Gdx.graphics.getDeltaTime());
-		if(Gdx.input.isKeyPressed(Keys.O)) player.moveForward(-1f*speed*Gdx.graphics.getDeltaTime());
+		if(Gdx.input.isKeyPressed(Keys.D)) player.strafe(-1f*speed*Gdx.graphics.getDeltaTime());
+		if(Gdx.input.isKeyPressed(Keys.W)) player.moveForward(speed*Gdx.graphics.getDeltaTime());
+		if(Gdx.input.isKeyPressed(Keys.S)) player.moveForward(-1f*speed*Gdx.graphics.getDeltaTime());
 		
 		if(Gdx.input.isKeyPressed(Keys.SPACE)) player.altitude += (speed * Gdx.graphics.getDeltaTime());
 		if(Gdx.input.isKeyPressed(Keys.CONTROL_LEFT)) player.altitude -= (speed * Gdx.graphics.getDeltaTime());
@@ -120,6 +128,7 @@ public class GameScreen implements Screen{
 		if (Gdx.input.isKeyJustPressed(Keys.F11)) toggleFullscreen();
 		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)) Gdx.app.exit();
+		
 	}
 	public void raycast() {
 		final HashSet<Sector<?>> liveSectors = getLiveSectors();
