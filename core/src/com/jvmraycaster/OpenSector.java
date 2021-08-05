@@ -51,7 +51,7 @@ public class OpenSector extends Polyline implements Sector<OpenSector>{
 	public float getBottomHeight() {
 		return this.wall.getBottomHeight();
 	}
-
+	
 	/*
 	@Override
 	public OpenSector getTranslated(float x, float y) {

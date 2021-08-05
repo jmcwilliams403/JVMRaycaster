@@ -2,7 +2,8 @@ package com.jvmraycaster;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Shape2D;
+//import com.badlogic.gdx.math.Shape2D;
+import com.badlogic.gdx.math.Intersector;
 public abstract class Entity extends Circle{
 
 	private static final long serialVersionUID = -9068456646371734579L;
@@ -68,8 +69,15 @@ public abstract class Entity extends Circle{
 		height = 0;
 	}
 	public boolean overlaps (Sector<?> p) {
-		return overlaps(this, p);
+		final float[] vertices = p.getTransformedVertices();
+		final int size = vertices.length;
+		final int end = (p instanceof ClosedSector)? size : size-2;
+		for(int i = 0; i < end; i+=2) {
+			if(Intersector.intersectSegmentCircle(new Vector2(vertices[i], vertices[i+1]), new Vector2(vertices[(i+2)%size], vertices[(i+3)%size]), this, null)) return true;
+		}
+		return false;
 	}
+	/*
 	protected static <T extends Shape2D> boolean overlaps(T base, Sector<?> p) {
 		final float[] vertices = p.getTransformedVertices();
 		final float size = vertices.length;
@@ -80,6 +88,7 @@ public abstract class Entity extends Circle{
 		}
 		return false;
 	}
+	*/
 	public static Vector2 toVector2(Vector3 vector) {
 		return new Vector2(vector.x, vector.y);
 	}

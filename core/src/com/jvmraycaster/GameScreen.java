@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import space.earlygrey.shapedrawer.JoinType;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -19,7 +20,6 @@ import com.badlogic.gdx.Input.Keys;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Comparator;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.InputAdapter;
 public class GameScreen implements Screen{
 	final JVMRaycaster game;
@@ -101,11 +101,10 @@ public class GameScreen implements Screen{
 			shapeDrawer.filledRectangle(WIDTH/-2, HEIGHT/-2, WIDTH, HEIGHT, Color.valueOf("00000088"));
 			shapeDrawer.filledCircle(player.x,player.y, player.radius);
 			shapeDrawer.sector(player.x, player.y, (float)DEPTH, (float)Math.toRadians(player.rotation-(player.fov.angle/2)), (float)Math.toRadians(player.fov.angle), Color.valueOf("ffffff44"), Color.valueOf("ffffff44"));
-			shapeDrawer.polygon(player.fov.getCrop());
+			//shapeDrawer.polygon(player.fov.getCrop());
 			HashSet<Sector<?>> sectors = getLiveSectors();
 			for (Sector<?> sector: sectors) {
-				
-				shapeDrawer.polygon(sector.getTransformedVertices());
+				shapeDrawer.path(sector.getTransformedVertices(), 1, JoinType.NONE, sector instanceof OpenSector);
 			}
 		}
 	}

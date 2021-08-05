@@ -2,9 +2,11 @@ package com.jvmraycaster;
 import com.badlogic.gdx.math.collision.Ray;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.MathUtils;
-
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.utils.FloatArray;
 public class FOV extends Entity{
 	private static final long serialVersionUID = -1449654005087061697L;
 	private static final Interpolation screen = new Interpolation() {
@@ -98,6 +100,34 @@ public class FOV extends Entity{
 	public boolean overlaps(Sector<?> p) {
 		return super.overlaps(p) && overlaps(getCrop(), p);
 	}
+	
+	private static boolean overlaps(Polygon crop, Sector<?>p) {
+		if(p instanceof ClosedSector) return Intersector.intersectPolygons(new FloatArray(crop.getTransformedVertices()), new FloatArray(p.getTransformedVertices()));
+
+		
+		final float[] vertices = p.getTransformedVertices();
+		final int size = vertices.length;
+		final int end = size-2;
+		
+		for (int i = 0; i < end; i+=2) {
+			final Vector2 a = new Vector2(vertices[i], vertices[i+1]);
+			final Vector2 b = new Vector2(vertices[(i+2)%size], vertices[(i+3)%size]);
+			if ((crop.contains(a)||crop.contains(b))||Intersector.intersectSegmentPolygon(a,b, crop)) return true;
+		}
+		
+		return false;
+		
+	}
+	
+	/*
+	private static FloatArray toClosedSector(Sector<?>p) {
+		FloatArray output = new FloatArray(p.getTransformedVertices());
+		FloatArray temp = new FloatArray(output);
+		temp.reverse();
+		output.addAll(temp);
+		return output;
+	}
+	*/
 	public final Polygon getCrop() {
 		final float x = this.radius * (float)Math.tan(Math.toRadians(this.angle/2));
 		Polygon crop = new Polygon(new float[] {0, 0, x*-1, this.radius, x, this.radius});
